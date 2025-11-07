@@ -1,6 +1,8 @@
-# New Light Test Task
+# [New Light Test Task](https://new-light-test-task.vercel.app/)
 
 Service using [Elysia](https://elysiajs.com/) framework and [Prisma ORM](https://www.prisma.io/) to manage tasks, with some queue processing using [Bull](https://www.npmjs.com/package/bull).
+
+Swagger UI documentation is available at deployed at https://new-light-test-task.vercel.app/swagger.
 
 ## Development
 To start the development server run:
