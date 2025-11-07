@@ -5,6 +5,8 @@ import { logger } from "./shared/infrastructure/logging/logger";
 import { loggerPlugin } from "./shared/interface/http/loggerPlugin";
 import { createTaskRoutes } from "./tasks/interface/http/routes";
 
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+
 const app = new Elysia();
 
 app.get("/", () => "Hello! It's New Light Test App!");
@@ -18,7 +20,7 @@ app.use(
         title: "🦊 Elysia New Light Task Service",
         description:
           "New Light Test Task Service built with Elysia Framework, demonstrating task management with logging and queue processing.",
-        version: "1.0.0",
+        version: "0.1.0",
         license: {
           name: "MIT",
           url: "https://opensource.org/license/mit/",
@@ -34,7 +36,7 @@ app.use(
 app.use(createTaskRoutes(prisma));
 
 async function main() {
-  app.listen(3000);
+  app.listen(PORT);
 
   logger.info("🦊 Elysia service started", {
     port: app.server?.port,
