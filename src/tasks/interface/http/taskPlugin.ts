@@ -1,31 +1,22 @@
 import type { PrismaClient } from "@prisma/client";
 import { Elysia } from "elysia";
-import { logger } from "../../../shared/infrastructure/logging/logger";
-import { createQueue } from "../../../shared/infrastructure/queue";
 import { CreateTask } from "../../application/use-cases/CreateTask";
 import { DeleteTask } from "../../application/use-cases/DeleteTask";
 import { GetTask } from "../../application/use-cases/GetTask";
 import { ListTasks } from "../../application/use-cases/ListTasks";
 import { UpdateTask } from "../../application/use-cases/UpdateTask";
+import { BullTaskDueCheckScheduler } from "../../infrastructure/queue/BullTaskDueCheckScheduler";
 import { PrismaTaskRepository } from "../../infrastructure/repositories/PrismaTaskRepository";
-
-const TASK_DUE_DATE_QUEUE_NAME = "task-due-date-queue";
 
 const createTaskUseCases = (db: PrismaClient) => {
   const repo = new PrismaTaskRepository(db);
-  const dueDateQueue = createQueue(TASK_DUE_DATE_QUEUE_NAME);
-
-  dueDateQueue.process(async (job) => {
-    logger.info(`notification:send:${TASK_DUE_DATE_QUEUE_NAME}`, job.data);
-
-    return Promise.resolve();
-  });
+  const dueCheckScheduler = new BullTaskDueCheckScheduler();
 
   return {
-    create: new CreateTask(repo, dueDateQueue),
+    create: new CreateTask(repo, dueCheckScheduler),
     get: new GetTask(repo),
     list: new ListTasks(repo),
-    update: new UpdateTask(repo, dueDateQueue),
+    update: new UpdateTask(repo, dueCheckScheduler),
     delete: new DeleteTask(repo),
   };
 };
