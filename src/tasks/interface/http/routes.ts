@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { TaskModel } from "./dto";
 import { createTaskPlugin } from "./taskPlugin";
 
@@ -15,12 +15,35 @@ export const createTaskRoutes = (db: PrismaClient) => {
       .use(createTaskPlugin(db))
       // List
       .get(
-        "/",
-        async ({ taskUseCases, query }) => {
-          const tasks = await taskUseCases.list.execute(query);
-          return TaskModel.toTaskListDto(tasks);
+        "",
+        async ({ taskUseCases, query, set }) => {
+          try {
+            const tasks = await taskUseCases.list.execute(query);
+            return TaskModel.toTaskListDto(tasks);
+          } catch (error) {
+            set.status = 500;
+            return {
+              status: "error",
+              message: "Internal Server Error",
+            };
+          }
         },
-        { query: TaskModel.getAllParams }
+        {
+          query: TaskModel.getAllParams,
+          response: {
+            200: t.Array(t.Object(TaskModel.TaskSchema)),
+            500: t.Object({
+              status: t.String({ examples: ["error"] }),
+              message: t.String({ examples: ["Internal Server Error"] }),
+            }),
+          },
+          detail: {
+            tags: ["Tasks"],
+            summary: "List all tasks",
+            description:
+              "Retrieve a list of all tasks. Optionally, filter tasks by their status using the `status` query parameter.",
+          },
+        }
       )
 
       // Get by id
@@ -32,15 +55,33 @@ export const createTaskRoutes = (db: PrismaClient) => {
             return TaskModel.toTaskDto(task);
           } catch {
             set.status = 404;
-            return { message: "Task not found" };
+            return {
+              status: "error",
+              message: "Task not found",
+            };
           }
         },
-        { params: TaskModel.getParams }
+        {
+          params: TaskModel.getParams,
+          response: {
+            200: t.Object(TaskModel.TaskSchema),
+            404: t.Object({
+              status: t.String({ examples: ["error"] }),
+              message: t.String({ examples: ["Task not found"] }),
+            }),
+          },
+          detail: {
+            tags: ["Tasks"],
+            summary: "Get a task by its ID",
+            description:
+              "Retrieve a single task using its unique identifier provided in the URL path parameter.",
+          },
+        }
       )
 
       // Create
       .post(
-        "/",
+        "",
         async ({ body, taskUseCases, set }) => {
           const id = crypto.randomUUID();
           const dueDate = body.dueDate ? new Date(body.dueDate) : null;
@@ -55,7 +96,22 @@ export const createTaskRoutes = (db: PrismaClient) => {
           set.status = 201;
           return TaskModel.toTaskDto(task);
         },
-        { body: TaskModel.createTaskBody }
+        {
+          body: TaskModel.createTaskBody,
+          response: {
+            201: t.Object(TaskModel.TaskSchema),
+            500: t.Object({
+              status: t.String({ examples: ["error"] }),
+              message: t.String({ examples: ["Internal Server Error"] }),
+            }),
+          },
+          detail: {
+            tags: ["Tasks"],
+            summary: "Create a new task",
+            description:
+              "Create a new task by providing the title, optional description, and optional due date in the request body.",
+          },
+        }
       )
 
       // Update
@@ -81,12 +137,28 @@ export const createTaskRoutes = (db: PrismaClient) => {
             return TaskModel.toTaskDto(task);
           } catch {
             set.status = 404;
-            return { message: "Task not found" };
+            return {
+              status: "error",
+              message: "Task not found",
+            };
           }
         },
         {
           params: TaskModel.updateParams,
           body: TaskModel.updateTaskBody,
+          response: {
+            200: t.Object(TaskModel.TaskSchema),
+            404: t.Object({
+              status: t.String({ examples: ["error"] }),
+              message: t.String({ examples: ["Task not found"] }),
+            }),
+          },
+          detail: {
+            tags: ["Tasks"],
+            summary: "Update an existing task",
+            description:
+              "Update an existing task by providing its ID in the URL path parameter and the updated fields in the request body.",
+          },
         }
       )
 
@@ -97,7 +169,18 @@ export const createTaskRoutes = (db: PrismaClient) => {
           await taskUseCases.delete.execute(params.id);
           set.status = 204;
         },
-        { params: TaskModel.deleteParams }
+        {
+          params: TaskModel.deleteParams,
+          response: {
+            204: t.Optional(t.Null()),
+          },
+          detail: {
+            tags: ["Tasks"],
+            summary: "Delete a task by its ID",
+            description:
+              "Delete a task by providing its ID in the URL path parameter.",
+          },
+        }
       )
   );
 };
