@@ -6,7 +6,7 @@ export class GetTask {
 
   async execute(id: TaskId) {
     const task = await this.repo.findById(id);
-    if (!task) throw new Error("Task not found");
+
     return task;
   }
 }
