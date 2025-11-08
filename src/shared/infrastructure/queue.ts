@@ -1,4 +1,4 @@
-import Queue from "bull";
+import Bull from "bull";
 import { env } from "prisma/config";
 
-export const createQueue = (name: string) => new Queue(name, env("REDIS_URL"));
+export const createQueue = (name: string) => new Bull(name, env("REDIS_URL"));
