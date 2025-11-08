@@ -52,7 +52,6 @@ export const createTaskRoutes = (db: PrismaClient) => {
         async ({ taskUseCases, params, set }) => {
           try {
             const task = await taskUseCases.get.execute(params.id);
-            console.log("Fetched task:", task);
             if (!task) {
               set.status = 404;
               return {
