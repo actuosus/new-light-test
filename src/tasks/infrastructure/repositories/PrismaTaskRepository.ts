@@ -50,6 +50,14 @@ export class PrismaTaskRepository implements TaskRepository {
     });
   }
 
+  async create(task: Task): Promise<void> {
+    this.save(task);
+  }
+
+  async update(task: Task): Promise<void> {
+    this.save(task);
+  }
+
   async delete(id: TaskId): Promise<Task | void> {
     if (!isUuid(id)) {
       logger.warn("Attempted delete with invalid UUID", { id });

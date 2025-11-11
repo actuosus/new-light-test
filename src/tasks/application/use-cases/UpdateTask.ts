@@ -25,7 +25,7 @@ export class UpdateTask {
       dueDate: input.dueDate,
     });
 
-    await this.repo.save(task);
+    await this.repo.update(task);
     this.dueCheckScheduler.scheduleCheck(task);
 
     return task;

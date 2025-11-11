@@ -16,7 +16,7 @@ export class CreateTask {
   }) {
     const task = Task.create(input);
 
-    await this.repo.save(task);
+    await this.repo.create(task);
     this.dueCheckScheduler.scheduleCheck(task);
 
     return task;

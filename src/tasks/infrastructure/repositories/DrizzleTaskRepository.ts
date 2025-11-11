@@ -54,8 +54,12 @@ export class DrizzleTaskRepository implements TaskRepository {
     return records.map(this.toDomain);
   }
 
-  async save(task: Task): Promise<void> {
+  async create(task: Task): Promise<void> {
     await this.db.insert(tasks).values(task);
+  }
+
+  async update(task: Task): Promise<void> {
+    await this.db.update(tasks).set(task).where(eq(tasks.id, task.id));
   }
 
   async delete(id: TaskId): Promise<Task | void> {
