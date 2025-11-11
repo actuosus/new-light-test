@@ -40,7 +40,7 @@ export const createTaskRoutes = (db: any) => {
             const tasks = await taskUseCases.list.execute(query);
             return TaskModel.toTaskListDto(tasks);
           } catch (error) {
-            logger.error("Error listing tasks:", error);
+            logger.error(error, "Error listing tasks");
             return createInternalServerErrorBody(set);
           }
         },
@@ -72,7 +72,7 @@ export const createTaskRoutes = (db: any) => {
             }
             return TaskModel.toTaskDto(task);
           } catch (error) {
-            logger.error("Error getting task:", error);
+            logger.error(error, "Error getting task");
             return createInternalServerErrorBody(set);
           }
         },
@@ -112,7 +112,7 @@ export const createTaskRoutes = (db: any) => {
             set.status = 201;
             return TaskModel.toTaskDto(task);
           } catch (error) {
-            logger.error("Error creating task:", error);
+            logger.error(error, "Error creating task");
             return createInternalServerErrorBody(set);
           }
         },
@@ -159,7 +159,7 @@ export const createTaskRoutes = (db: any) => {
 
             return TaskModel.toTaskDto(task);
           } catch (error) {
-            logger.error("Error updating task:", error);
+            logger.error(error, "Error updating task");
             return createInternalServerErrorBody(set);
           }
         },
@@ -193,7 +193,7 @@ export const createTaskRoutes = (db: any) => {
             }
             set.status = 204;
           } catch (error) {
-            logger.error("Error deleting task:", error);
+            logger.error(error, "Error deleting task");
             return createInternalServerErrorBody(set);
           }
         },

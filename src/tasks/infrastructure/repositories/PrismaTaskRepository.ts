@@ -2,7 +2,7 @@ import {
   PrismaClient,
   Task as PrismaTask,
 } from "../../../generated/prisma/client";
-import { logger } from "../../../shared/infrastructure/logging/logger";
+import { logger } from "../../../shared/infrastructure/logging/pino";
 import { Task, type TaskId, type TaskStatus } from "../../domain/Task";
 import type { TaskRepository } from "../../domain/TaskRepository";
 
@@ -60,7 +60,7 @@ export class PrismaTaskRepository implements TaskRepository {
 
   async delete(id: TaskId): Promise<Task | void> {
     if (!isUuid(id)) {
-      logger.warn("Attempted delete with invalid UUID", { id });
+      logger.warn({ id }, "Attempted delete with invalid UUID");
       throw new Error("Invalid task id format");
     }
 
@@ -69,10 +69,10 @@ export class PrismaTaskRepository implements TaskRepository {
       return this.toDomain(task);
     } catch (e: any) {
       if (e.code === "P2025") {
-        logger.debug("Delete on non-existent task", { id });
+        logger.debug({ id }, "Delete on non-existent task");
         return;
       }
-      logger.error("Error deleting task", { id, error: e });
+      logger.error({ id, error: e }, "Error deleting task");
       throw e;
     }
   }

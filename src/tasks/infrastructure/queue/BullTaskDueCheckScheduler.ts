@@ -1,4 +1,4 @@
-import { logger } from "../../../shared/infrastructure/logging/logger";
+import { logger } from "../../../shared/infrastructure/logging/pino";
 import { Task } from "../../domain/Task";
 import { TaskDueCheckScheduler } from "../../domain/TaskDueCheckScheduler";
 import { taskDueCheckQueue } from "./taskDueCheckQueue";
@@ -10,7 +10,7 @@ const QUEUE_NAME = "send-task-due-date";
 export class BullTaskDueCheckScheduler implements TaskDueCheckScheduler {
   constructor() {
     taskDueCheckQueue.process(QUEUE_NAME, async (job) => {
-      logger.info(`notification:send:task-due-date-queue`, job.data);
+      logger.info(job.data, `notification:send:task-due-date-queue`);
 
       return Promise.resolve();
     });

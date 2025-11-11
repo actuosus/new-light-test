@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import { logger } from "../../infrastructure/logging/logger";
+import { logger } from "../../infrastructure/logging/pino";
 
 const startTimes = new WeakMap<Request, number>();
 
@@ -9,10 +9,13 @@ export const loggerPlugin = new Elysia({ name: "logger-plugin" })
   .onRequest(({ request, logger }) => {
     startTimes.set(request, Date.now());
 
-    logger.info("request:start", {
-      method: request.method,
-      url: request.url,
-    });
+    logger.info(
+      {
+        method: request.method,
+        url: request.url,
+      },
+      "request:start"
+    );
   })
 
   .onAfterHandle(({ request, set, body, logger }) => {
@@ -20,15 +23,18 @@ export const loggerPlugin = new Elysia({ name: "logger-plugin" })
     const duration = Date.now() - start;
     const status = set.status ?? 200;
 
-    logger.info("request:end", {
-      method: request.method,
-      url: request.url,
-      status,
-      duration,
-    });
+    logger.info(
+      {
+        method: request.method,
+        url: request.url,
+        status,
+        duration,
+      },
+      "request:end"
+    );
 
     if (logger.isLevelEnabled("debug") && body && typeof body === "object") {
-      logger.debug("response:body", { body });
+      logger.debug({ body }, "response:body");
     }
   })
 
@@ -37,11 +43,14 @@ export const loggerPlugin = new Elysia({ name: "logger-plugin" })
 
     const err = error as Error;
 
-    logger.error("request:error", {
-      method: request.method,
-      url: request.url,
-      status,
-      message: err?.message,
-      stack: err?.stack,
-    });
+    logger.error(
+      {
+        method: request.method,
+        url: request.url,
+        status,
+        message: err?.message,
+        stack: err?.stack,
+      },
+      "request:error"
+    );
   });

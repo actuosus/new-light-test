@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import { logger } from "../../../shared/infrastructure/logging/logger";
+import { logger } from "../../../shared/infrastructure/logging/pino";
 import { CreateTask } from "../../application/use-cases/CreateTask";
 import { DeleteTask } from "../../application/use-cases/DeleteTask";
 import { GetTask } from "../../application/use-cases/GetTask";

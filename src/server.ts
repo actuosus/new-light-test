@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 import { db } from "./shared/infrastructure/db/drizzle";
-import { logger } from "./shared/infrastructure/logging/logger";
+import { logger } from "./shared/infrastructure/logging/pino";
 import { loggerPlugin } from "./shared/interface/http/loggerPlugin";
 import { swaggerPlugin } from "./shared/interface/http/swaggerPlugin";
 import { createTaskRoutes } from "./tasks/interface/http/routes";
@@ -22,10 +22,13 @@ const isVercel =
 
 if (!isVercel) {
   app.listen(PORT);
-  logger.info("🦊 Elysia service started", {
-    port: app.server?.port,
-    hostname: app.server?.hostname,
-  });
+  logger.info(
+    {
+      port: app.server?.port,
+      hostname: app.server?.hostname,
+    },
+    "🦊 Elysia service started"
+  );
 }
 
 export const fetch = app.fetch;
