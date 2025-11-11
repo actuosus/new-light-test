@@ -11,7 +11,7 @@ const app = new Elysia();
 
 app.get("/", () => "Hello! It's New Light Task Test Service!");
 app.use(loggerPlugin);
-// app.use(swaggerPlugin);
+app.use(swaggerPlugin);
 // app.use(createTaskRoutes(db));
 
 const isVercel =
