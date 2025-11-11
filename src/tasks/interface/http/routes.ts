@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
-import { Elysia, t } from "elysia";
+import { Context, Elysia, t } from "elysia";
 import { TaskModel } from "./dto";
 import { createTaskPlugin } from "./taskPlugin";
 
@@ -11,9 +11,14 @@ export const createTaskRoutes = (db: PrismaClient) => {
     status: "error",
     message,
   });
-  const createNotFoundBody = () => createErrorBody("Task not found");
-  const createInternalServerErrorBody = () =>
-    createErrorBody("Internal Server Error");
+  const createNotFoundBody = (set: Context["set"]) => {
+    set.status = 404;
+    return createErrorBody("Task not found");
+  };
+  const createInternalServerErrorBody = (set: Context["set"]) => {
+    set.status = 500;
+    return createErrorBody("Internal Server Error");
+  };
 
   return (
     new Elysia({
@@ -36,8 +41,7 @@ export const createTaskRoutes = (db: PrismaClient) => {
             const tasks = await taskUseCases.list.execute(query);
             return TaskModel.toTaskListDto(tasks);
           } catch (error) {
-            set.status = 500;
-            return createInternalServerErrorBody();
+            return createInternalServerErrorBody(set);
           }
         },
         {
@@ -64,13 +68,11 @@ export const createTaskRoutes = (db: PrismaClient) => {
           try {
             const task = await taskUseCases.get.execute(params.id);
             if (!task) {
-              set.status = 404;
-              return createNotFoundBody();
+              return createNotFoundBody(set);
             }
             return TaskModel.toTaskDto(task);
           } catch {
-            set.status = 500;
-            return createInternalServerErrorBody();
+            return createInternalServerErrorBody(set);
           }
         },
         {
@@ -146,14 +148,12 @@ export const createTaskRoutes = (db: PrismaClient) => {
             });
 
             if (!task) {
-              set.status = 404;
-              return createNotFoundBody();
+              return createNotFoundBody(set);
             }
 
             return TaskModel.toTaskDto(task);
           } catch {
-            set.status = 500;
-            return createInternalServerErrorBody();
+            return createInternalServerErrorBody(set);
           }
         },
         {
@@ -183,8 +183,7 @@ export const createTaskRoutes = (db: PrismaClient) => {
             await taskUseCases.delete.execute(params.id);
             set.status = 204;
           } catch {
-            set.status = 500;
-            return createInternalServerErrorBody();
+            return createInternalServerErrorBody(set);
           }
         },
         {
