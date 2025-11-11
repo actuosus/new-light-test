@@ -21,7 +21,7 @@ const isVercel =
   Boolean(process.env.VERCEL);
 
 if (!isVercel) {
-  // app.listen(PORT);
+  app.listen(PORT);
   logger.info("🦊 Elysia service started", {
     port: app.server?.port,
     hostname: app.server?.hostname,

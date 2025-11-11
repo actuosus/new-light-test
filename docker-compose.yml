@@ -1,18 +1,17 @@
-version: '3.8'
-
 services:
-  # db:
-  #   image: postgres:13
-  #   restart: always
-  #   environment:
-  #     POSTGRES_USER: user
-  #     POSTGRES_PASSWORD: password
-  #     POSTGRES_DB: new-light-test
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - db-data:/var/lib/postgresql/data
-  
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_ROOT_PASSWORD: root-password
+      POSTGRES_DB: new-light-test
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
   redis:
     image: redis:latest
     ports:
@@ -21,18 +20,22 @@ services:
       - redis-data:/data
 
   app:
-    build: .
+    build:
+      context: .
+      args:
+        DATABASE_URL: postgres://user:password@db:5432/new-light-test
     ports:
       - "3000:3000"
     environment:
-      # - DATABASE_URL=postgres://user:password@db:5432/new-light-test
-      - PORT=3000
-      - DATABASE_URL=prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3RfaWQiOjEsInNlY3VyZV9rZXkiOiJza19YQ3lWME5oRFNabVNIQjVGdzRfNzYiLCJhcGlfa2V5IjoiMDFLOUM4TkVTQkNXMEdYQ1hCQlhaVzc0UzMiLCJ0ZW5hbnRfaWQiOiIzNWRhMTM1NzU2NWVkYTY2Mjk5OWZiYWYzYmE1ZjcyN2IxZmQ3YmM0NjgyYzY1MDIxZDI3YTVlZjAwYzI1MDhhIiwiaW50ZXJuYWxfc2VjcmV0IjoiOTliMGZkYzItYmUxOC00YTU1LWJjYTctZDZhOGY3OTE3MzQ2In0.s8M05aQWi9sDyJF2vRisBaCURCeUALGTeJ2PRPpJnE4
-      - REDIS_URL=redis://redis:6379
+      PORT: 3000
+      DATABASE_URL: postgres://user:password@db:5432/new-light-test
+      REDIS_URL: redis://redis:6379
+    env_file:
+      - .env
     depends_on:
-      # - db
+      - db
       - redis
 
 volumes:
-  # db-data: {}
+  db-data: {}
   redis-data: {}

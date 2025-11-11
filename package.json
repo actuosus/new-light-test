@@ -12,6 +12,7 @@
     "drizzle:generate": "drizzle-kit generate",
     "drizzle:migrate": "drizzle-kit migrate",
     "drizzle:studio": "drizzle-kit studio",
+    "migrate": "bun run drizzle:migrate",
     "deploy": "vercel deploy --prod",
     "postinstall": "drizzle-kit generate"
   },
