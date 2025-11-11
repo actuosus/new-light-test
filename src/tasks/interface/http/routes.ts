@@ -234,13 +234,30 @@ export const createTaskRoutes = (db: PrismaClient) => {
       .delete(
         "/:id",
         async ({ params, taskUseCases, set }) => {
-          await taskUseCases.delete.execute(params.id);
-          set.status = 204;
+          try {
+            await taskUseCases.delete.execute(params.id);
+            set.status = 204;
+          } catch {
+            set.status = 500;
+            return {
+              status: "error",
+              message: "Internal Server Error",
+            };
+          }
         },
         {
           params: TaskModel.deleteParams,
           response: {
             204: t.Any({ default: "", description: "No content" }),
+            500: t.Object(
+              {
+                status: t.String({ examples: ["error"] }),
+                message: t.String({ examples: ["Internal Server Error"] }),
+              },
+              {
+                description: "Internal Server Error",
+              }
+            ),
           },
           detail: {
             tags: ["Tasks"],
