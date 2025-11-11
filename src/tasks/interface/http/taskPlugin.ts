@@ -1,16 +1,16 @@
 import { Elysia } from "elysia";
+import { logger } from "../../../shared/infrastructure/logging/logger";
 import { CreateTask } from "../../application/use-cases/CreateTask";
 import { DeleteTask } from "../../application/use-cases/DeleteTask";
 import { GetTask } from "../../application/use-cases/GetTask";
 import { ListTasks } from "../../application/use-cases/ListTasks";
 import { UpdateTask } from "../../application/use-cases/UpdateTask";
 import { BullTaskDueCheckScheduler } from "../../infrastructure/queue/BullTaskDueCheckScheduler";
-import { DrizzleTaskRepository } from "../../infrastructure/repositories/DrizzleTaskRepository";
-import { logger } from "../../../shared/infrastructure/logging/logger";
+import { PrismaTaskRepository } from "../../infrastructure/repositories/PrismaTaskRepository";
 
 const createTaskUseCases = (db: any) => {
-  // const repo = new PrismaTaskRepository(db);
-  const repo = new DrizzleTaskRepository(db);
+  const repo = new PrismaTaskRepository(db);
+  // const repo = new DrizzleTaskRepository(db);
   const dueCheckScheduler = new BullTaskDueCheckScheduler();
 
   return {

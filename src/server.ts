@@ -1,5 +1,6 @@
 import { Elysia } from "elysia";
-import { db } from "./shared/infrastructure/db/drizzle";
+// import { db } from "./shared/infrastructure/db/drizzle";
+import { db } from "./shared/infrastructure/db/prisma";
 import { logger } from "./shared/infrastructure/logging/logger";
 import { loggerPlugin } from "./shared/interface/http/loggerPlugin";
 import { swaggerPlugin } from "./shared/interface/http/swaggerPlugin";
