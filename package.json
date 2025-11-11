@@ -31,7 +31,7 @@
     "dotenv": "^17.2.3",
     "typescript": "^5.9.3"
   },
-  "module": "src/index.js",
+  "module": "src/server.js",
   "license": "MIT",
   "author": {
     "name": "Arthur Chafonov",
