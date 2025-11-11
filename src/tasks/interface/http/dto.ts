@@ -2,6 +2,25 @@ import { t } from "elysia";
 import { Task } from "../../domain/Task";
 
 export namespace TaskModel {
+  export const notFoundResponse = t.Object(
+    {
+      status: t.String({ examples: ["error"] }),
+      message: t.String({ examples: ["Task not found"] }),
+    },
+    {
+      description: "Task not found error",
+    }
+  );
+  export const internalServerErrorResponse = t.Object(
+    {
+      status: t.String({ examples: ["error"] }),
+      message: t.String({ examples: ["Internal Server Error"] }),
+    },
+    {
+      description: "Internal Server Error",
+    }
+  );
+
   export const TaskSchema = {
     id: t.String({
       format: "uuid",

@@ -7,6 +7,14 @@ const INSTANCE_NAME = "task-routes";
 const TASKS_PREFIX = "/tasks";
 
 export const createTaskRoutes = (db: PrismaClient) => {
+  const createErrorBody = (message: string) => ({
+    status: "error",
+    message,
+  });
+  const createNotFoundBody = () => createErrorBody("Task not found");
+  const createInternalServerErrorBody = () =>
+    createErrorBody("Internal Server Error");
+
   return (
     new Elysia({
       name: INSTANCE_NAME,
@@ -29,10 +37,7 @@ export const createTaskRoutes = (db: PrismaClient) => {
             return TaskModel.toTaskListDto(tasks);
           } catch (error) {
             set.status = 500;
-            return {
-              status: "error",
-              message: "Internal Server Error",
-            };
+            return createInternalServerErrorBody();
           }
         },
         {
@@ -41,15 +46,7 @@ export const createTaskRoutes = (db: PrismaClient) => {
             200: t.Array(t.Object(TaskModel.TaskSchema), {
               description: "List of task objects",
             }),
-            500: t.Object(
-              {
-                status: t.String({ examples: ["error"] }),
-                message: t.String({ examples: ["Internal Server Error"] }),
-              },
-              {
-                description: "Internal Server Error",
-              }
-            ),
+            500: TaskModel.internalServerErrorResponse,
           },
           detail: {
             tags: ["Tasks"],
@@ -68,18 +65,12 @@ export const createTaskRoutes = (db: PrismaClient) => {
             const task = await taskUseCases.get.execute(params.id);
             if (!task) {
               set.status = 404;
-              return {
-                status: "error",
-                message: "Task not found",
-              };
+              return createNotFoundBody();
             }
             return TaskModel.toTaskDto(task);
           } catch {
             set.status = 500;
-            return {
-              status: "error",
-              message: "Internal Server Error",
-            };
+            return createInternalServerErrorBody();
           }
         },
         {
@@ -88,24 +79,8 @@ export const createTaskRoutes = (db: PrismaClient) => {
             200: t.Object(TaskModel.TaskSchema, {
               description: "Retrieved task object",
             }),
-            404: t.Object(
-              {
-                status: t.String({ examples: ["error"] }),
-                message: t.String({ examples: ["Task not found"] }),
-              },
-              {
-                description: "Task not found error",
-              }
-            ),
-            500: t.Object(
-              {
-                status: t.String({ examples: ["error"] }),
-                message: t.String({ examples: ["Internal Server Error"] }),
-              },
-              {
-                description: "Internal Server Error",
-              }
-            ),
+            404: TaskModel.notFoundResponse,
+            500: TaskModel.internalServerErrorResponse,
           },
           detail: {
             tags: ["Tasks"],
@@ -139,15 +114,7 @@ export const createTaskRoutes = (db: PrismaClient) => {
             201: t.Object(TaskModel.TaskSchema, {
               description: "Created task object",
             }),
-            500: t.Object(
-              {
-                status: t.String({ examples: ["error"] }),
-                message: t.String({ examples: ["Internal Server Error"] }),
-              },
-              {
-                description: "Internal Server Error",
-              }
-            ),
+            500: TaskModel.internalServerErrorResponse,
           },
           detail: {
             tags: ["Tasks"],
@@ -180,19 +147,13 @@ export const createTaskRoutes = (db: PrismaClient) => {
 
             if (!task) {
               set.status = 404;
-              return {
-                status: "error",
-                message: "Task not found",
-              };
+              return createNotFoundBody();
             }
 
             return TaskModel.toTaskDto(task);
           } catch {
             set.status = 500;
-            return {
-              status: "error",
-              message: "Internal Server Error",
-            };
+            return createInternalServerErrorBody();
           }
         },
         {
@@ -202,24 +163,8 @@ export const createTaskRoutes = (db: PrismaClient) => {
             200: t.Object(TaskModel.TaskSchema, {
               description: "Updated task object",
             }),
-            404: t.Object(
-              {
-                status: t.String({ examples: ["error"] }),
-                message: t.String({ examples: ["Task not found"] }),
-              },
-              {
-                description: "Task not found error",
-              }
-            ),
-            500: t.Object(
-              {
-                status: t.String({ examples: ["error"] }),
-                message: t.String({ examples: ["Internal Server Error"] }),
-              },
-              {
-                description: "Internal Server Error",
-              }
-            ),
+            404: TaskModel.notFoundResponse,
+            500: TaskModel.internalServerErrorResponse,
           },
           detail: {
             tags: ["Tasks"],
@@ -239,25 +184,14 @@ export const createTaskRoutes = (db: PrismaClient) => {
             set.status = 204;
           } catch {
             set.status = 500;
-            return {
-              status: "error",
-              message: "Internal Server Error",
-            };
+            return createInternalServerErrorBody();
           }
         },
         {
           params: TaskModel.deleteParams,
           response: {
             204: t.Any({ default: "", description: "No content" }),
-            500: t.Object(
-              {
-                status: t.String({ examples: ["error"] }),
-                message: t.String({ examples: ["Internal Server Error"] }),
-              },
-              {
-                description: "Internal Server Error",
-              }
-            ),
+            500: TaskModel.internalServerErrorResponse,
           },
           detail: {
             tags: ["Tasks"],
