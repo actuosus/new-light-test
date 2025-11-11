@@ -67,7 +67,7 @@ export const createTaskRoutes = (db: PrismaClient) => {
       // Get by id
       .get(
         "/:id",
-        async ({ taskUseCases, params, set }) => {
+        async ({ taskUseCases, params, set, logger }) => {
           try {
             const task = await taskUseCases.get.execute(params.id);
             if (!task) {
@@ -100,7 +100,7 @@ export const createTaskRoutes = (db: PrismaClient) => {
       // Create
       .post(
         "",
-        async ({ body, taskUseCases, set }) => {
+        async ({ body, taskUseCases, set, logger }) => {
           const id = crypto.randomUUID();
           const dueDate = body.dueDate ? new Date(body.dueDate) : null;
 
@@ -139,7 +139,7 @@ export const createTaskRoutes = (db: PrismaClient) => {
       // Update
       .put(
         "/:id",
-        async ({ body, params, taskUseCases, set }) => {
+        async ({ body, params, taskUseCases, set, logger }) => {
           try {
             const dueDate =
               body.dueDate === undefined
@@ -188,7 +188,7 @@ export const createTaskRoutes = (db: PrismaClient) => {
       // Delete
       .delete(
         "/:id",
-        async ({ params, taskUseCases, set }) => {
+        async ({ params, taskUseCases, set, logger }) => {
           try {
             const task = await taskUseCases.delete.execute(params.id);
             if (!task) {
