@@ -104,15 +104,20 @@ export const createTaskRoutes = (db: PrismaClient) => {
           const id = crypto.randomUUID();
           const dueDate = body.dueDate ? new Date(body.dueDate) : null;
 
-          const task = await taskUseCases.create.execute({
-            id,
-            title: body.title,
-            description: body.description,
-            dueDate,
-          });
+          try {
+            const task = await taskUseCases.create.execute({
+              id,
+              title: body.title,
+              description: body.description,
+              dueDate,
+            });
 
-          set.status = 201;
-          return TaskModel.toTaskDto(task);
+            set.status = 201;
+            return TaskModel.toTaskDto(task);
+          } catch (error) {
+            logger.error("Error creating task:", error);
+            return createInternalServerErrorBody(set);
+          }
         },
         {
           body: TaskModel.createBody,
