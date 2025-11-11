@@ -19,5 +19,3 @@ jobs:
         run: bun install
       - name: Run tests
         run: bun test
-        env:
-          BASE_URL: ${{ github.event.client_payload.url }}
