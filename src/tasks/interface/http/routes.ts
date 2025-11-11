@@ -13,6 +13,7 @@ export const createTaskRoutes = (db: PrismaClient) => {
       prefix: TASKS_PREFIX,
     })
       .use(createTaskPlugin(db))
+      .model("Task", t.Object(TaskModel.TaskSchema))
       // List
       .get(
         "",
