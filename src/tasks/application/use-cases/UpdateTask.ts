@@ -16,7 +16,7 @@ export class UpdateTask {
     dueDate?: Date | null;
   }) {
     const task = await this.repo.findById(input.id);
-    if (!task) throw new Error("Task not found");
+    if (!task) return null;
 
     task.update({
       title: input.title,
