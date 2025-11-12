@@ -1,4 +1,4 @@
-import { staticPlugin } from "@elysiajs/static";
+// import { staticPlugin } from "@elysiajs/static";
 import { Elysia } from "elysia";
 import { db } from "./shared/infrastructure/db/drizzle";
 import { logger } from "./shared/infrastructure/logging/pino";
@@ -8,19 +8,18 @@ import { createTaskRoutes } from "./tasks/interface/http/routes";
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 
+const isVercel =
+  Boolean(process.env.VERCEL) ||
+  Boolean(process.env.NOW_REGION) ||
+  Boolean(process.env.VERCEL_REGION);
+
 const app = new Elysia();
 
-app.use(staticPlugin({ assets: "public", prefix: "/" }));
+// app.use(staticPlugin({ assets: "./public", prefix: "/" }));
 app.get("/", () => "Hello! It's New Light Task Test Service!");
 app.use(loggerPlugin);
 app.use(swaggerPlugin);
 app.use(createTaskRoutes(db));
-
-const isVercel =
-  Boolean(process.env.VERCEL) ||
-  Boolean(process.env.NOW_REGION) ||
-  Boolean(process.env.VERCEL_REGION) ||
-  Boolean(process.env.VERCEL);
 
 if (!isVercel) {
   app.listen(PORT);
