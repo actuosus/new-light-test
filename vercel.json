@@ -1,29 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "bunVersion": "1.x",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "public" }
-    },
-    { "src": "src/server.ts", "use": "@vercel/elysia" }
-  ],
-  "routes": [
-    {
-      "handle": "error"
-    },
-    {
-      "status": 404,
-      "src": "^(?!/api).*$",
-      "dest": "/404.html"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
-  ]
+  "bunVersion": "1.x"
 }
