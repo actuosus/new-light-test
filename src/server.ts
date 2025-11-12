@@ -19,7 +19,9 @@ const app = new Elysia();
 
 if (isDev || isVercelDev)
   app.use(staticPlugin({ assets: "./public", prefix: "/" }));
-app.get("/", () => "Hello! It's New Light Task Test Service!");
+app.get("/", () => "Hello! It's New Light Task Test Service!", {
+  detail: { hide: true },
+});
 app.use(loggerPlugin);
 app.use(swaggerPlugin);
 app.use(createTaskRoutes(db));
