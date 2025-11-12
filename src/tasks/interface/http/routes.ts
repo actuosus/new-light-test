@@ -118,6 +118,7 @@ export const createTaskRoutes = (db: any) => {
         },
         {
           body: TaskModel.createBody,
+          parse: "application/json",
           response: {
             201: t.Object(TaskModel.TaskSchema, {
               description: "Created task object",
@@ -166,6 +167,7 @@ export const createTaskRoutes = (db: any) => {
         {
           params: TaskModel.updateParams,
           body: TaskModel.updateBody,
+          parse: "application/json",
           response: {
             200: t.Object(TaskModel.TaskSchema, {
               description: "Updated task object",
