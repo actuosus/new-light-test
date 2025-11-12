@@ -5,6 +5,7 @@
   "scripts": {
     "test": "bun test",
     "dev": "bun run --watch src/server.ts",
+    "build:vercel": "bun run ./scripts/build-vercel.ts",
     "start": "bun run src/server.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",

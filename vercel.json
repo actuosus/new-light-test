@@ -1,9 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "bunVersion": "1.x",
-  "routes": [
-    { "src": "/favicon.ico", "dest": "/public/favicon.ico" },
-    { "src": "/favicon.png", "dest": "/public/favicon.png" },
-    { "src": "/(.*)", "dest": "/src/server.ts" }
-  ]
+  "buildCommand": "bun run build:vercel"
 }
