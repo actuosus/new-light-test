@@ -8,5 +8,22 @@
       "config": { "distDir": "public" }
     },
     { "src": "src/server.ts", "use": "@vercel/elysia" }
+  ],
+  "routes": [
+    {
+      "handle": "error"
+    },
+    {
+      "status": 404,
+      "src": "^(?!/api).*$",
+      "dest": "/404.html"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
   ]
 }
